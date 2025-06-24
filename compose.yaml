@@ -1,0 +1,43 @@
+services:
+  vectordb:
+    build: .
+    image: vectordb-test:dev
+
+    volumes:
+      - ./data:/app/data:z
+
+    develop:
+     watch:
+        # Sync the working directory with the `/app` directory in the container
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - .venv/
+            - __pycache__/
+            - "*.pyc"
+
+        # Rebuild the image on changes to the `pyproject.toml`
+        - action: rebuild
+          path: ./pyproject.toml
+
+  ollama:
+    privileged: true # Seems to need privileged for gpu support
+    image: ollama/ollama:0.6.8
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - /root/.ollama:/root/.ollama:z
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+
+
