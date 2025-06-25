@@ -2,6 +2,7 @@ services:
   vectordb:
     build: .
     image: vectordb-test:dev
+    container_name: vectordb
 
     volumes:
       - ./data:/app/data:z
@@ -10,10 +11,9 @@ services:
      watch:
         # Sync the working directory with the `/app` directory in the container
         - action: sync
-          path: .
-          target: /app
+          path: ./src
+          target: /app/src
           ignore:
-            - .venv/
             - __pycache__/
             - "*.pyc"
 

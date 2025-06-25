@@ -20,6 +20,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 def main():
+    print("checking for csv")
     if not os.path.exists(f"{DATA_PATH}/{FILE_NAME}"):
         download()
     else:
@@ -44,12 +45,6 @@ def main():
         embedding_function=embedding_function
     )
 
-    print(df['content_vector'].iloc[0])
-    print(type(df['content_vector'].iloc[0]))
-
-    test_vector = literal_eval(df['content_vector'].iloc[0])
-    print(f"Parsed vector length: {
-          len(test_vector) if test_vector else 'Failed'}")
     df['content_vector'] = df.content_vector.apply(literal_eval)
     df['title_vector'] = df.title_vector.apply(literal_eval)
 
