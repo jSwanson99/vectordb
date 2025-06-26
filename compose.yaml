@@ -3,9 +3,12 @@ services:
     build: .
     image: vectordb-test:dev
     container_name: vectordb
-
+    environment:
+      - DOCKER_ENV=true
     volumes:
       - ./data:/app/data:z
+    depends_on:
+      - ollama
 
     develop:
      watch:
@@ -39,5 +42,9 @@ services:
               capabilities: [gpu]
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
-
-
+    entrypoint: ["/bin/sh", "-c"]
+    command: |
+      "ollama serve & 
+       sleep 5 && 
+       ollama pull nomic-embed-text && 
+       wait"
